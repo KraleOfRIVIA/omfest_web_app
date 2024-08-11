@@ -22,7 +22,7 @@ const MyDataTable: React.FC = observer(() => {
     const representativeBodyTemplate = (rowData: { tg_username: string; imgsrc: string }) => {
         return (
             <div className="flex items-center gap-2">
-                <img alt="Avatar" src={rowData.imgsrc || 'https://via.placeholder.com/32'} width="32" height="32" className="rounded-full" />
+                <img alt="Avatar" src={rowData.imgsrc || 'https://via.placeholder.com/32'} width="64" height="64" className="rounded-full" />
                 <span>{rowData.tg_username}</span>
             </div>
         );
@@ -70,7 +70,7 @@ const MyDataTable: React.FC = observer(() => {
                 className="min-w-full"
             >
                 <Column field="rank" header="Rank" body={rankTemplate} />
-                <Column field="tg_username" body={representativeBodyTemplate} header="Telegram Username" />
+                <Column field="tg_username" body={representativeBodyTemplate} header="Username" />
                 <Column field="balance" header="Balance" body={balanceTemplate} sortable />
             </DataTable>
         </div>
