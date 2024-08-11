@@ -51,6 +51,16 @@ const MyDataTable: React.FC = observer(() => {
         );
     };
 
+    // Функция для отображения баланса с эмодзи алмаза
+    const balanceTemplate = (rowData: { balance: number }) => {
+        return (
+            <div className="flex items-center gap-2">
+                <span>{rowData.balance}</span>
+                <span className="text-xl">💎</span>
+            </div>
+        );
+    };
+
     return (
         <div className="overflow-x-auto">
             <DataTable
@@ -61,7 +71,7 @@ const MyDataTable: React.FC = observer(() => {
             >
                 <Column field="rank" header="Rank" body={rankTemplate} />
                 <Column field="tg_username" body={representativeBodyTemplate} header="Telegram Username" />
-                <Column field="balance" sortable header="Balance" />
+                <Column field="balance" header="Balance" body={balanceTemplate} sortable />
             </DataTable>
         </div>
     );
