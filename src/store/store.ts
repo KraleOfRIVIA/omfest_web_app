@@ -33,7 +33,7 @@ export default class WebAppStore {
 
         try {
             const { data, error }: PostgrestResponse<UserData> = await supabase
-                .from<UserData>('UserData')
+                .from('UserData')
                 .select('tg_username, balance, imgsrc');
 
             if (error) {
