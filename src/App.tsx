@@ -1,9 +1,9 @@
 import React from 'react';
 import MyDataTable from './components/user_table.tsx';
-import {MainButton, useShowPopup, useThemeParams} from '@vkruglikov/react-telegram-web-app';
+import { MainButton, useShowPopup, useWebApp } from '@vkruglikov/react-telegram-web-app';
 
 export const App: React.FC = () => {
-    const [colorScheme] = useThemeParams();
+    const WebApp = useWebApp();
     const showPopup = useShowPopup();
 
     const handleClick = () =>
@@ -11,11 +11,11 @@ export const App: React.FC = () => {
             message: 'Hello, I am popup',
         });
 
-    const themeClass = colorScheme === 'dark' ? 'dark-theme' : 'light-theme';
-    console.log(themeClass);
+    // Определение класса темы на основе цветовой схемы
+    const themeClass = WebApp.colorScheme === 'dark' ? 'dark' : 'light';
 
     return (
-        <div className={themeClass}>
+        <div className={`bg-${themeClass}-background text-${themeClass}-text`}>
             <MainButton text="SHOW POPUP" onClick={handleClick} />
             <MyDataTable />
         </div>

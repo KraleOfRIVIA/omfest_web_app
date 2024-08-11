@@ -4,17 +4,21 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Context } from "../main.tsx";
 import { ClipLoader } from 'react-spinners';
+import {useWebApp} from "@vkruglikov/react-telegram-web-app";
 
 const MyDataTable: React.FC = observer(() => {
     const { store } = useContext(Context);
-
+    const WebApp = useWebApp();
     useEffect(() => {
         store.fetchUsers();
     }, [store]);
 
+    // Определение класса темы на основе контекста или другой логики
+    const themeClass = WebApp.colorScheme === 'dark' ? 'dark' : 'light';
+
     if (store.loading) return (
-        <div className="loader-container">
-            <ClipLoader color="#348ADB" size={150} />
+        <div className={`loader-container ${themeClass}`}>
+            <ClipLoader color="currentColor" size={150} />
         </div>
     );
 
@@ -22,7 +26,13 @@ const MyDataTable: React.FC = observer(() => {
     const representativeBodyTemplate = (rowData: { tg_username: string; imgsrc: string }) => {
         return (
             <div className="flex items-center gap-2">
-                <img alt="Avatar" src={rowData.imgsrc || 'https://via.placeholder.com/32'} width="64" height="64" className="rounded-full" />
+                <img
+                    alt="Avatar"
+                    src={rowData.imgsrc || 'https://via.placeholder.com/32'}
+                    width="64"
+                    height="64"
+                    className={`rounded-full border ${themeClass === 'dark' ? 'border-avatar-border-dark' : 'border-avatar-border-light'}`}
+                />
                 <span>{rowData.tg_username}</span>
             </div>
         );
@@ -62,7 +72,7 @@ const MyDataTable: React.FC = observer(() => {
     };
 
     return (
-        <div className="overflow-x-auto">
+        <div className={`overflow-x-auto ${themeClass}`}>
             <DataTable
                 value={store.users}
                 showGridlines

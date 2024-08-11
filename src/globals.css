@@ -15,15 +15,42 @@
     background-color: rgba(255, 255, 255, 0.8);
     z-index: 1000;
 }
-/* App.css */
-.light-theme {
-    background-color: white;
-    color: black;
+/* styles.css */
+
+/* Определение переменных для светлой темы */
+:root {
+    --background-color-light: #ffffff;
+    --text-color-light: #1f2937;
+    --loader-color-light: #348ADB;
+    --avatar-border-light: #e5e7eb;
 }
 
-.dark-theme {
-    background-color: #1e1e1e;
-    color: white;
+/* Определение переменных для темной темы */
+.dark {
+    --background-color-dark: #1f2937;
+    --text-color-dark: #f3f4f6;
+    --loader-color-dark: #4b5563;
+    --avatar-border-dark: #374151;
 }
 
-/* Добавьте стили для таблицы и других компонентов, если нужно */
+/* Применение переменных */
+body {
+    background-color: var(--background-color-light);
+    color: var(--text-color-light);
+}
+
+.dark body {
+    background-color: var(--background-color-dark);
+    color: var(--text-color-dark);
+}
+
+.loader-container {
+    color: var(--loader-color-light);
+}
+
+.dark .loader-container {
+    color: var(--loader-color-dark);
+}
+
+/* Добавьте стили для DataTable и других элементов */
+
