@@ -1,6 +1,5 @@
 import React from 'react';
 import MyDataTable from './components/user_table.tsx';
-import './App.css';
 import { useThemeParams } from '@vkruglikov/react-telegram-web-app';
 
 export const App: React.FC = () => {
