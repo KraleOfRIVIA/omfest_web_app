@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
@@ -8,7 +8,6 @@ import WebApp from '@twa-dev/sdk';
 
 const MyDataTable: React.FC = observer(() => {
     const { store } = useContext(Context);
-    const tableRef = useRef<HTMLDivElement | null>(null); // Реф для контейнера таблицы
 
     useEffect(() => {
         store.fetchUsers();
@@ -19,22 +18,9 @@ const MyDataTable: React.FC = observer(() => {
     // Определение класса темы на основе контекста или другой логики
     const themeClass = WebApp.colorScheme === 'dark' ? 'dark' : 'light';
 
-    useEffect(() => {
-        // Проверяем, если данные загружены
-        if (store.users.length > 0 && user) {
-            // Находим индекс строки с текущим пользователем
-            const userIndex = store.users.findIndex(u => u.tg_username === user);
-            
-            if (userIndex !== -1) {
-                // Прокручиваем к строке с пользователем
-                const rowElement = document.getElementById(`user-row-${userIndex}`);
-                rowElement?.scrollIntoView({
-                    behavior: 'smooth',
-                    block: 'center'
-                });
-            }
-        }
-    }, [store.users, user]);
+    // Находим пользователя и выделяем его из общего списка
+    const frozenUsers = user ? store.users.filter(u => u.tg_username === user) : [];
+    const otherUsers = store.users.filter(u => u.tg_username !== user);
 
     if (store.loading) return (
         <div className={`loader-container ${themeClass}`}>
@@ -43,9 +29,9 @@ const MyDataTable: React.FC = observer(() => {
     );
 
     // Функция для отображения аватарки и никнейма
-    const representativeBodyTemplate = (rowData: { tg_username: string; imgsrc: string }, options: { rowIndex: number }) => {
+    const representativeBodyTemplate = (rowData: { tg_username: string; imgsrc: string }) => {
         return (
-            <div id={`user-row-${options.rowIndex}`} className="flex items-center gap-2">
+            <div className="flex items-center gap-2">
                 <img
                     alt="Avatar"
                     src={rowData.imgsrc || 'https://via.placeholder.com/32'}
@@ -92,9 +78,10 @@ const MyDataTable: React.FC = observer(() => {
     };
 
     return (
-        <div ref={tableRef} className={`overflow-x-auto ${themeClass}`}>
+        <div className={`overflow-x-auto ${themeClass}`}>
             <DataTable
-                value={store.users}
+                value={otherUsers} // Основные данные
+                frozenValue={frozenUsers} // Закрепленные строки (пользователь)
                 showGridlines
                 tableStyle={{ minWidth: '10rem' }}
                 className="min-w-full"
