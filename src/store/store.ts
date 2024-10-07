@@ -8,7 +8,7 @@ const supabase: SupabaseClient = createClient(supabaseUrl, supabaseKey);
 interface UserData {
     tg_username: string;
     balance: number;
-    rank?: number; // Поле для рейтинга
+    rank?: number;
     imgsrc: string
 }
 
