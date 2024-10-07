@@ -15,7 +15,7 @@ interface UserData {
 export default class WebAppStore {
     users: UserData[] = [];
     loading: boolean = false;
-
+    
     constructor() {
         makeAutoObservable(this);
     }

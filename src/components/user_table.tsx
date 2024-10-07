@@ -8,6 +8,7 @@ import WebApp from '@twa-dev/sdk';
 
 const MyDataTable: React.FC = observer(() => {
     const { store } = useContext(Context);
+    const themeClass = WebApp.colorScheme === 'dark' ? 'dark' : 'light';
 
     useEffect(() => {
         store.fetchUsers();
@@ -15,18 +16,27 @@ const MyDataTable: React.FC = observer(() => {
 
     const user = WebApp.initDataUnsafe.user?.username;
 
-    // Определение класса темы на основе контекста или другой логики
-    const themeClass = WebApp.colorScheme === 'dark' ? 'dark' : 'light';
+    if (!user){
+        return (
+            <div className={`loader-container ${themeClass}`}>
+                <ClipLoader color="currentColor" size={150} />
+            </div>
+        );
+    }
+    // Найти пользователя
+    const frozenUsers = user 
+        ? store.users.filter(u => u.tg_username.toLowerCase() === user.toLowerCase()) 
+        : [];
 
-    // Находим пользователя и выделяем его из общего списка
-    const frozenUsers = user ? store.users.filter(u => u.tg_username === user) : [];
-    const otherUsers = store.users.filter(u => u.tg_username !== user);
+    const otherUsers = store.users.filter(u => u.tg_username.toLowerCase() !== user.toLowerCase());
 
-    if (store.loading) return (
-        <div className={`loader-container ${themeClass}`}>
-            <ClipLoader color="currentColor" size={150} />
-        </div>
-    );
+    if (store.loading) {
+        return (
+            <div className={`loader-container ${themeClass}`}>
+                <ClipLoader color="currentColor" size={150} />
+            </div>
+        );
+    }
 
     // Функция для отображения аватарки и никнейма
     const representativeBodyTemplate = (rowData: { tg_username: string; imgsrc: string }) => {
@@ -47,22 +57,13 @@ const MyDataTable: React.FC = observer(() => {
     // Функция для отображения медалей и рейтинга
     const rankTemplate = (rowData: { rank: number }) => {
         let medalIcon = null;
-
-        if (rowData.rank === 1) {
-            medalIcon = "🥇"; // Золотая медаль
-        } else if (rowData.rank === 2) {
-            medalIcon = "🥈"; // Серебряная медаль
-        } else if (rowData.rank === 3) {
-            medalIcon = "🥉"; // Бронзовая медаль
-        }
+        if (rowData.rank === 1) medalIcon = "🥇";
+        else if (rowData.rank === 2) medalIcon = "🥈";
+        else if (rowData.rank === 3) medalIcon = "🥉";
 
         return (
             <div className="flex items-center gap-2">
-                {medalIcon ? (
-                    <span className="text-xl">{medalIcon}</span>
-                ) : (
-                    <span>{rowData.rank}</span>
-                )}
+                {medalIcon ? <span className="text-xl">{medalIcon}</span> : <span>{rowData.rank}</span>}
             </div>
         );
     };
@@ -78,10 +79,12 @@ const MyDataTable: React.FC = observer(() => {
     };
 
     return (
-        <div className={`overflow-x-auto ${themeClass}`}>
+        <div className={`overflow-x-auto ${themeClass}`} style={{ height: WebApp.viewportHeight, overflowY: 'auto' }}> {/* Ограничение высоты */}
             <DataTable
                 value={otherUsers} // Основные данные
-                frozenValue={frozenUsers} // Закрепленные строки (пользователь)
+                frozenValue={frozenUsers} // Закрепленные строки
+                scrollable // Включение скролла
+                scrollHeight="flex" // Высота для скролла
                 showGridlines
                 tableStyle={{ minWidth: '10rem' }}
                 className="min-w-full"
