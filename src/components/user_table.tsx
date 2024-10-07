@@ -16,14 +16,14 @@ const MyDataTable: React.FC = observer(() => {
 
     const user = WebApp.initDataUnsafe.user?.username;
 
-    if (!user){
+    if (!user) {
         return (
             <div className={`loader-container ${themeClass}`}>
                 <ClipLoader color="currentColor" size={150} />
             </div>
         );
     }
-    // Найти пользователя
+    
     const frozenUsers = user 
         ? store.users.filter(u => u.tg_username.toLowerCase() === user.toLowerCase()) 
         : [];
@@ -38,23 +38,31 @@ const MyDataTable: React.FC = observer(() => {
         );
     }
 
-    // Функция для отображения аватарки и никнейма
     const representativeBodyTemplate = (rowData: { tg_username: string; imgsrc: string }) => {
         return (
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2" style={{ width: '100%' }}>
                 <img
                     alt="Avatar"
                     src={rowData.imgsrc || 'https://via.placeholder.com/32'}
                     width="64"
                     height="64"
                     className={`rounded-full border ${themeClass === 'dark' ? 'border-avatar-border-dark' : 'border-avatar-border-light'}`}
+                    style={{ flexShrink: 0 }}
                 />
-                <span>{rowData.tg_username}</span>
+                <span
+                    style={{
+                        maxWidth: '120px',
+                        whiteSpace: 'nowrap',
+                        overflow: 'hidden',
+                        textOverflow: 'ellipsis',
+                    }}
+                >
+                    {rowData.tg_username}
+                </span>
             </div>
         );
     };
 
-    // Функция для отображения медалей и рейтинга
     const rankTemplate = (rowData: { rank: number }) => {
         let medalIcon = null;
         if (rowData.rank === 1) medalIcon = "🥇";
@@ -68,7 +76,6 @@ const MyDataTable: React.FC = observer(() => {
         );
     };
 
-    // Функция для отображения баланса с эмодзи алмаза
     const balanceTemplate = (rowData: { balance: number }) => {
         return (
             <div className="flex items-center gap-2">
@@ -81,13 +88,11 @@ const MyDataTable: React.FC = observer(() => {
     return (
         <div className={`overflow-x-auto ${themeClass}`} style={{ height: WebApp.viewportHeight, overflowY: 'auto' }}> {/* Ограничение высоты */}
             <DataTable
-                value={otherUsers} // Основные данные
-                frozenValue={frozenUsers} // Закрепленные строки
-                scrollable // Включение скролла
-                scrollHeight="flex" // Высота для скролла
+                value={otherUsers} 
+                frozenValue={frozenUsers} 
+                scrollable 
+                scrollHeight="flex"
                 showGridlines
-                tableStyle={{ minWidth: '10rem' }}
-                className="min-w-full"
             >
                 <Column field="rank" header="Rank" body={rankTemplate} />
                 <Column field="tg_username" body={representativeBodyTemplate} header="Username" />
