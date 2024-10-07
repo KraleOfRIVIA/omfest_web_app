@@ -4,11 +4,10 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Context } from "../main.tsx";
 import { ClipLoader } from 'react-spinners';
-import {useWebApp} from "@vkruglikov/react-telegram-web-app";
+import WebApp from '@twa-dev/sdk';
 
 const MyDataTable: React.FC = observer(() => {
     const { store } = useContext(Context);
-    const WebApp = useWebApp();
     useEffect(() => {
         store.fetchUsers();
     }, [store]);
